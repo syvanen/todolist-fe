@@ -36,7 +36,6 @@ export default {
       // TODO - FILL THIS OUT IN THE LAB EXERCISE
       this.$store.dispatch("updateTodo", {id: this.todoItem._id, important: true} );
       console.info("INFO - Mark todo as important ", this.todoItem.important);
-      this.$forceUpdate();
     }
   }
 };
