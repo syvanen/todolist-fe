@@ -13,19 +13,19 @@ objects:
   kind: ImageStream
   metadata:
     labels:
-      build: "${NAME}"
-    name: "${NAME}"
+      build: "${NAME}-${COLOUR}"
+    name: "${NAME}-${COLOUR}"
   spec: {}
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
-    name: "${NAME}"
+    name: "${NAME}-${COLOUR}"
     labels:
-      app: "${NAME}"
+      app: "${NAME}-${COLOUR}"
   spec:
     replicas: 1
     selector:
-      name: "${NAME}"
+      name: "${NAME}-${COLOUR}"
     strategy:
       activeDeadlineSeconds: 21600
       resources: {}
@@ -40,12 +40,12 @@ objects:
       metadata:
         creationTimestamp:
         labels:
-          name: "${NAME}"
+          name: "${NAME}-${COLOUR}"
       spec:
         containers:
         - image: "docker-registry.default.svc:5000/${NAMESPACE}/${NAME}:${APP_TAG}"
           imagePullPolicy: Always
-          name: "${NAME}"
+          name: "${NAME}-${COLOUR}"
           ports:
           - containerPort: 8080
             protocol: TCP
@@ -67,8 +67,8 @@ objects:
   kind: Service
   metadata:
     labels:
-      name: "${NAME}"
-    name: "${NAME}"
+      name: "${NAME}-${COLOUR}"
+    name: "${NAME}-${COLOUR}"
   spec:
     ports:
     - name: 8080-tcp
@@ -76,7 +76,7 @@ objects:
       protocol: TCP
       targetPort: 8080
     selector:
-      name: "${NAME}"
+      name: "${NAME}-${COLOUR}"
     sessionAffinity: None
     type: ClusterIP
 - apiVersion: v1
@@ -90,7 +90,7 @@ objects:
       targetPort: 8080-tcp
     to:
       kind: Service
-      name: "${NAME}"
+      name: "${NAME}-${COLOUR}"
       weight: 100
     wildcardPolicy: None
 - apiVersion: v1
@@ -126,5 +126,9 @@ parameters:
   displayName: Project/Namespace for Jenkins Pipelines
   description: The project/namespace where the Jenkins executing pipelines is deployed.
   required: true
+- name: COLOUR
+  displayName: Colour
+  description: The colour version of the deployment
+  default: ''
 labels:
   template: todolist-fe-deploy-template
